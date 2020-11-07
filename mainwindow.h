@@ -26,5 +26,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Storage storage;
+    void process();
 };
 #endif // MAINWINDOW_H
