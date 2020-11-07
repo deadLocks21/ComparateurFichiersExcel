@@ -100,15 +100,5 @@ void MainWindow::process()
 
     storage.getRHContent();
     storage.getProwebContent();
-
-//    for (int i = 0; i < 101; i++)
-//    {
-//        ui->progressBar->setValue(i);
-
-
-
-//        QTime dieTime= QTime::currentTime().addSecs(1);
-//        while (QTime::currentTime() < dieTime)
-//            QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-//    }
+    storage.compare();
 }

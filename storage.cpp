@@ -103,7 +103,7 @@ Worker Storage::rhWorker(string infos)
 
      // qDebug() << "Site =" << site.data() << "serialNumber =" << serialNumber << "name =" << name.data() << "date =" << date.data() << "range =" << range;
 
-     return Worker(serialNumber, name, date, range, site);
+     return Worker(serialNumber, name, "", "", date, range, site);
 }
 
 Worker Storage::prowebWorker(string infos)
@@ -127,7 +127,8 @@ Worker Storage::prowebWorker(string infos)
     else
         serialNumber = 0;
 
-    string name = content.at(2) + " " + content.at(4);
+    string fisrtName = content.at(4);
+    string lastName = content.at(2);
 
     string date;
     if (content.at(16) != "")
@@ -139,8 +140,39 @@ Worker Storage::prowebWorker(string infos)
 
     // qDebug() << "Site =" << site.data() << "serialNumber =" << serialNumber << "name =" << name.data() << "date =" << date.data() << "range =" << range;
 
-    return Worker(serialNumber, name, date, range, site);
+    return Worker(serialNumber, "", lastName, fisrtName, date, range, site);
     // return Worker(0, "", "", 0, "");
+}
+
+Worker Storage::rhWorkerInProweb(Worker w)
+{
+    bool ctn = true;
+    int i = 0;
+    Worker theWorker(0, "", "", "", "", 0, "");
+    int serialNumber = 0;
+    string name = w.getName();
+    for_each(name.begin(), name.end(), [](char & c){c = ::toupper(c);});
+
+    while(ctn)
+    {
+        string prowebFirstName = prowebContent.at(i).getFirstName();
+        string prowebLastName = prowebContent.at(i).getLastName();
+
+        for_each(prowebFirstName.begin(), prowebFirstName.end(), [](char & c){c = ::toupper(c);});
+        for_each(prowebLastName.begin(), prowebLastName.end(), [](char & c){c = ::toupper(c);});
+
+        size_t foundFirstName = name.find(prowebFirstName);
+        size_t foundLastName = name.find(prowebLastName);
+
+        if (foundLastName!=std::string::npos && foundFirstName!=std::string::npos)
+            theWorker = prowebContent.at(i);
+
+        i++;
+        if (prowebContent.length() <= i)
+            ctn = false;
+    }
+
+    return theWorker;
 }
 
 QList<string> Storage::split(string s, string delimiter)
@@ -158,4 +190,31 @@ QList<string> Storage::split(string s, string delimiter)
     list << s;
 
     return list;
+}
+
+void Storage::compare()
+{
+    QList<Worker> errors;
+    for (int i = 0; i < rhContent.length(); ++i)
+    {
+        Worker theWorker = rhWorkerInProweb(rhContent.at(i));
+        if(theWorker.getSerialNumber() != 0)
+        {
+            Worker w = rhContent.at(i);
+            qDebug() << rhContent.at(i).getSerialNumber() << "Bon ^^";
+            if (w.compare(theWorker) == false)
+                errors << w;
+        }
+        else
+        {
+            errors << rhContent.at(i);
+        }
+
+        progressBar->setValue((int) ((i*33)/rhContent.length()) + 66);
+    }
+
+    progressBar->setValue(100);
+
+    for (int i = 0; i < errors.length(); ++i)
+        qDebug() << errors.at(i).getSerialNumber() << "error ...";
 }

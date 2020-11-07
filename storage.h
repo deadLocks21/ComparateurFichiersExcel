@@ -21,6 +21,8 @@ private:
     Worker rhWorker(string infos);
     Worker prowebWorker(string infos);
 
+    Worker rhWorkerInProweb(Worker w);
+
     QList<string> split(string s, string delimiter);
 
 
@@ -35,6 +37,8 @@ public:
 
     void getRHContent();
     void getProwebContent();
+
+    void compare();
 };
 
 #endif // STORAGE_H
