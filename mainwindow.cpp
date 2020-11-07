@@ -30,7 +30,7 @@ void MainWindow::on_pb_chooseRHFile_pressed()
     settings.beginGroup("CurrentVersion/Explorer/Shell Folders");
 
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Choisir le fichier des RH"), settings.value("Personal").toString(), tr("Excel Files (*.xls *.xlsx)"));
+        tr("Choisir le fichier des RH"), settings.value("Personal").toString(), tr("Excel Files (*.csv)"));
 
     storage.setRhFilePath(fileName.toStdString());
 
@@ -44,7 +44,7 @@ void MainWindow::on_pb_chooseProWebFile_pressed()
     settings.beginGroup("CurrentVersion/Explorer/Shell Folders");
 
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Choisir le fichier de proweb"), settings.value("Personal").toString(), tr("Excel Files (*.xls *.xlsx)"));
+        tr("Choisir le fichier de proweb"), settings.value("Personal").toString(), tr("Excel Files (*.csv)"));
 
     storage.setProwebFilePath(fileName.toStdString());
 
