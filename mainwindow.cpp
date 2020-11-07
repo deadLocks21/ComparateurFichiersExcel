@@ -4,7 +4,9 @@
 #include <QSettings>
 #include <QString>
 #include <QDebug>
+#include <QTime>
 #include <string>
+#include <QSplashScreen>
 
 using std::string;
 
@@ -58,7 +60,27 @@ void MainWindow::on_pb_launch_pressed()
         launch = false;
 
     if(launch) {
+
         qDebug() << "Go go go !!";
+        ui->pb_launch->setEnabled(false);
+        ui->pb_chooseRHFile->setEnabled(false);
+        ui->pb_chooseProWebFile->setEnabled(false);
+        ui->progressBar->setEnabled(true);
+
+        for (int i = 0; i < 101; i++)
+        {
+            ui->progressBar->setValue(i);
+
+            QTime dieTime= QTime::currentTime().addSecs(1);
+            while (QTime::currentTime() < dieTime)
+                QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+        }
+
+        ui->pb_launch->setEnabled(true);
+        ui->pb_chooseRHFile->setEnabled(true);
+        ui->pb_chooseProWebFile->setEnabled(true);
+        ui->progressBar->setEnabled(false);
+
     } else {
         if(storage.getRhFilePath() == "")
         {
