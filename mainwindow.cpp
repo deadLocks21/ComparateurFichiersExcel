@@ -95,9 +95,11 @@ void MainWindow::on_pb_launch_pressed()
 void MainWindow::process()
 {
     // TODO Enlever
-     storage.setRhFilePath("D:/Users/deadLocks21/Desktop/Fichier RH.csv");
+    storage.setRhFilePath("D:/Users/deadLocks21/Desktop/Fichier RH.csv");
+    storage.setProwebFilePath("D:/Users/deadLocks21/Desktop/Fichier proWeb.csv");
 
     storage.getRHContent();
+    storage.getProwebContent();
 
 //    for (int i = 0; i < 101; i++)
 //    {

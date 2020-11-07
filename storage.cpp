@@ -74,7 +74,14 @@ void Storage::getRHContent()
 
 void Storage::getProwebContent()
 {
-    // TODO Implementer
+    string path = prowebFilePath;
+    QList<string> list = readFile(path);
+
+    for (int i = 1; i < list.size(); ++i) {
+        string item = list.at(i);
+        prowebContent << prowebWorker(item);
+        progressBar->setValue((int) ((i*33)/list.size()) + 33);
+    }
 }
 
 
@@ -94,9 +101,46 @@ Worker Storage::rhWorker(string infos)
 
      int range = stoi(content.at(4), nullptr, 10);
 
-     qDebug() << "Site =" << site.data() << "serialNumber =" << serialNumber << "name =" << name.data() << "date =" << date.data() << "range =" << range;
+     // qDebug() << "Site =" << site.data() << "serialNumber =" << serialNumber << "name =" << name.data() << "date =" << date.data() << "range =" << range;
+
+     return Worker(serialNumber, name, date, range, site);
+}
+
+Worker Storage::prowebWorker(string infos)
+{
+    QList<string> content = split(infos, ";");
+
+    string siteComplete = content.at(13);
+    string site;
+    if (siteComplete != "")
+    {
+        string siteNum = siteComplete.substr(0, siteComplete.find(" - "));
+        int l = siteComplete.length() - siteNum.length() - 3;
+        site  = siteComplete.substr(siteNum.length() + 3, l);
+    }
+    else
+        site = "";
+
+    int serialNumber;
+    if (content.at(1) != "")
+         serialNumber = stoi(content.at(1),nullptr,10);
+    else
+        serialNumber = 0;
+
+    string name = content.at(2) + " " + content.at(4);
+
+    string date;
+    if (content.at(16) != "")
+        date = content.at(16);
+    else
+        date = "";
+
+    int range = stoi(content.at(56), nullptr, 10);
+
+    // qDebug() << "Site =" << site.data() << "serialNumber =" << serialNumber << "name =" << name.data() << "date =" << date.data() << "range =" << range;
 
     return Worker(serialNumber, name, date, range, site);
+    // return Worker(0, "", "", 0, "");
 }
 
 QList<string> Storage::split(string s, string delimiter)

@@ -19,6 +19,7 @@ private:
 
     QList<string> readFile(string path);
     Worker rhWorker(string infos);
+    Worker prowebWorker(string infos);
 
     QList<string> split(string s, string delimiter);
 
