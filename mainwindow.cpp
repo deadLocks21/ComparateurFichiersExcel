@@ -1,5 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QFileDialog>
+#include <QSettings>
+#include <QString>
+#include <QDebug>
+#include <string>
+
+using std::string;
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -13,3 +21,55 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+void MainWindow::on_pb_chooseRHFile_pressed()
+{
+    QSettings settings(QSettings::UserScope, "Microsoft", "Windows");
+    settings.beginGroup("CurrentVersion/Explorer/Shell Folders");
+
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Choisir le fichier des RH"), settings.value("Personal").toString(), tr("Excel Files (*.xls *.xlsx)"));
+
+    storage.setRhFilePath(fileName.toStdString());
+
+    ui->lb_rhPath->setStyleSheet("QLabel { color : black; }");
+    ui->lb_rhPath->setText(storage.getRhFilePath().data());
+}
+
+void MainWindow::on_pb_chooseProWebFile_pressed()
+{
+    QSettings settings(QSettings::UserScope, "Microsoft", "Windows");
+    settings.beginGroup("CurrentVersion/Explorer/Shell Folders");
+
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Choisir le fichier de proweb"), settings.value("Personal").toString(), tr("Excel Files (*.xls *.xlsx)"));
+
+    storage.setProwebFilePath(fileName.toStdString());
+
+    ui->lb_pwPath->setStyleSheet("QLabel { color : black; }");
+    ui->lb_pwPath->setText(storage.getProwebFilePath().data());
+}
+
+void MainWindow::on_pb_launch_pressed()
+{
+    bool launch = true;
+
+    if (storage.getRhFilePath() == "" || storage.getProwebFilePath() == "")
+        launch = false;
+
+    if(launch) {
+        qDebug() << "Go go go !!";
+    } else {
+        if(storage.getRhFilePath() == "")
+        {
+            ui->lb_rhPath->setStyleSheet("QLabel { color : red; }");
+            ui->lb_rhPath->setText("Saisir un fichier svp");
+        }
+
+        if(storage.getProwebFilePath() == "")
+        {
+            ui->lb_pwPath->setStyleSheet("QLabel { color : red; }");
+            ui->lb_pwPath->setText("Saisir un fichier svp");
+        }
+    }
+}
