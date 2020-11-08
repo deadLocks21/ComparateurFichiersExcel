@@ -1,6 +1,8 @@
 #include "storage.h"
 
 #include <QDebug>
+#include <stdio.h>
+#include <QSettings>
 #include <fstream>
 using namespace std;
 
@@ -215,6 +217,40 @@ void Storage::compare()
 
     progressBar->setValue(100);
 
-    for (int i = 0; i < errors.length(); ++i)
-        qDebug() << errors.at(i).getSerialNumber() << "error ...";
+    errorsHandler(errors);
+}
+
+void Storage::errorsHandler(QList<Worker> e)
+{
+    QSettings settings(QSettings::UserScope, "Microsoft", "Windows");
+    settings.beginGroup("CurrentVersion/Explorer/Shell Folders");
+    string documentsPath = settings.value("Personal").toString().toStdString();
+    string desktopPath = documentsPath.substr(0, documentsPath.length()-9) + "Bureau\\results.csv";
+
+    ofstream f("results.csv");
+
+    if(f)
+    {
+        for (int i = 0; i < e.length(); ++i) {
+            Worker wError = e.at(i);
+
+            string chain;
+            if(wError.resultsCompare.length() == 0)
+            {
+                chain = to_string(wError.getSerialNumber()) + ";XX" + wError.getName() + ";" + wError.getEntered() + ";" + wError.getLocation() + ";" + to_string(wError.getSalaryRange());
+            }
+            else
+            {
+                chain += wError.resultsCompare.at(0) ? to_string(wError.getSerialNumber()) + ";" : "XX" + to_string(wError.getSerialNumber()) + ";";
+                chain += wError.getName() + ";";
+                chain += wError.resultsCompare.at(2) ? wError.getEntered() + ";" : "XX" + wError.getEntered() + ";";
+                chain += wError.resultsCompare.at(3) ? wError.getLocation() + ";" : "XX" + wError.getLocation() + ";";
+                chain += wError.resultsCompare.at(1) ? to_string(wError.getSalaryRange()) : "XX" + to_string(wError.getSalaryRange());
+            }
+
+            f << chain.data() << "\n";
+        }
+    }
+
+    f.close();
 }

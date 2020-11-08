@@ -1,6 +1,7 @@
 #ifndef WORKER_H
 #define WORKER_H
 
+#include <QList>
 #include <string>
 using std::string;
 
@@ -29,6 +30,7 @@ public:
     string getLastName() const;
     string getFirstName() const;
     bool compare(Worker w);
+    QList<bool> resultsCompare;
 };
 
 #endif // WORKER_H

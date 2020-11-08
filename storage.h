@@ -39,6 +39,8 @@ public:
     void getProwebContent();
 
     void compare();
+
+    void errorsHandler(QList<Worker> e);
 };
 
 #endif // STORAGE_H

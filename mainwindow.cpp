@@ -59,8 +59,8 @@ void MainWindow::on_pb_launch_pressed()
     bool launch = true;
 
     // TODO Décomenter !!
-//    if (storage.getRhFilePath() == "" || storage.getProwebFilePath() == "")
-//        launch = false;
+    if (storage.getRhFilePath() == "" || storage.getProwebFilePath() == "")
+        launch = false;
 
     if(launch) {
 
@@ -95,8 +95,8 @@ void MainWindow::on_pb_launch_pressed()
 void MainWindow::process()
 {
     // TODO Enlever
-    storage.setRhFilePath("D:/Users/deadLocks21/Desktop/Fichier RH.csv");
-    storage.setProwebFilePath("D:/Users/deadLocks21/Desktop/Fichier proWeb.csv");
+//    storage.setRhFilePath("D:/Users/deadLocks21/Desktop/ProgCSEFlo/Fichier RH.csv");
+//    storage.setProwebFilePath("D:/Users/deadLocks21/Desktop/ProgCSEFlo/Fichier proWeb.csv");
 
     storage.getRHContent();
     storage.getProwebContent();
